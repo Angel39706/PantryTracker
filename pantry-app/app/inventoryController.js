@@ -8,10 +8,12 @@ export const useInventory = () => {
   const [itemName, setItemName] = useState('');
   const [itemQuantity, setItemQuantity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredInventory, setFilteredInventory] = useState([]);
 
   const handleUpdateInventory = async () => {
     const inventoryList = await updateInventory();
     setInventory(inventoryList);
+    setFilteredInventory(inventoryList);
     console.log(inventoryList);
   };
 
@@ -25,15 +27,21 @@ export const useInventory = () => {
     await handleUpdateInventory();
   };
 
-  const filteredInventory = inventory.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleSearch = () => {
+    const newFilteredInventory = inventory.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredInventory(newFilteredInventory);
+  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleSearchOpen = () => setSearchModalOpen(true);
-  const handleSearchClose = () => setSearchModalOpen(false);
+  const handleSearchClose = () => {
+    handleSearch();
+    setSearchModalOpen(false);
+  };
 
   useEffect(() => {
     handleUpdateInventory();
